@@ -1,23 +1,18 @@
-package com.babalola.smartparkingapplication.domain;
+package com.babalola.smartparkingapplication.domain.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import com.babalola.smartparkingapplication.domain.enums.UserTypeEnum;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
 
-@Entity
-@Table(name = "base_user")
+@MappedSuperclass
+@NoArgsConstructor
+@EqualsAndHashCode(callSuper = true)
 @Data
-public class BaseUser {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public abstract class BaseUser extends BaseEntity {
 
     @Column(name = "first_name", nullable = false)
     @NotBlank(message = "First name is mandatory")
@@ -28,14 +23,6 @@ public class BaseUser {
     @NotBlank(message = "Last name is mandatory")
     @Size(max = 50, message = "Last name must be less than 50 characters")
     private String lastName;
-
-    @Column(name = "created_date", nullable = false, updatable = false)
-    @PastOrPresent(message = "Created date cannot be in the future")
-    private LocalDateTime createdDate;
-
-    @Column(name = "modified_date")
-    @PastOrPresent(message = "Modified date cannot be in the future")
-    private LocalDateTime modifiedDate;
 
     @Column(name = "email", nullable = false, unique = true)
     @NotBlank(message = "Email is mandatory")
@@ -50,17 +37,8 @@ public class BaseUser {
     @Column(name = "is_deleted", nullable = false)
     private Boolean isDeleted = false;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "user_type", nullable = false)
-    private Enum userTypeEnum;
-
-    @PrePersist
-    protected void onCreate() {
-        createdDate = LocalDateTime.now();
-    }
-
-    @PreUpdate
-    protected void onUpdate() {
-        modifiedDate = LocalDateTime.now();
-    }
+    private UserTypeEnum userType;
 
 }

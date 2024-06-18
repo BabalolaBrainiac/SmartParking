@@ -1,4 +1,4 @@
-package com.babalola.smartparkingapplicatio;
+package com.babalola.smartparkingapplication;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
