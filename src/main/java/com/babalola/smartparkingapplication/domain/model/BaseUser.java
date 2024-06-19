@@ -34,7 +34,7 @@ public abstract class BaseUser extends BaseEntity {
     @Pattern(regexp = "^\\+?[0-9. ()-]{7,25}$", message = "Phone number is invalid")
     private String phoneNumber;
 
-    @Column(name = "is_deleted", nullable = false)
+    @Column(columnDefinition = "boolean default false")
     private Boolean isDeleted = false;
 
     @Enumerated(EnumType.STRING)
