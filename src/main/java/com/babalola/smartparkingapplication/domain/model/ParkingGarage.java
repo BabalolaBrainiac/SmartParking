@@ -27,5 +27,8 @@ public class ParkingGarage extends BaseEntity {
     private Location location;
 
     @OneToMany(mappedBy = "parkingGarage", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Vehicle> vehicles;
+
+    @OneToMany(mappedBy = "parkingGarage", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<AvailableParkingSpace> availableParkingSpaces;
 }
