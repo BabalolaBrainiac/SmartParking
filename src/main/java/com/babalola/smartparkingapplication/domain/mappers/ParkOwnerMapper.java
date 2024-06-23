@@ -10,9 +10,9 @@ import org.mapstruct.factory.Mappers;
 public interface ParkOwnerMapper {
     ParkOwnerMapper INSTANCE = Mappers.getMapper(ParkOwnerMapper.class);
 
-    @Mapping(source = "userType", target = "userTypeEnum")
+    @Mapping(source = "userType", target = "userType")
     ParkOwnerDto parkOwnerToParkOwnerDTO(ParkOwner parkOwner);
 
-    @Mapping(source = "userTypeEnum", target = "userType")
+    @Mapping(source = "userType", target = "userType")
     ParkOwner parkOwnerDTOToParkOwner(ParkOwnerDto parkOwnerDTO);
 }

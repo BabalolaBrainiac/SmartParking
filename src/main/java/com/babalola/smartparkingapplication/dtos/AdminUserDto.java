@@ -6,10 +6,8 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Null;
 
 public record AdminUserDto(
-
         @Null
         Long id,
-
         @NotBlank
         String firstName,
 
@@ -23,7 +21,6 @@ public record AdminUserDto(
 
         @Null
         Boolean isDeleted,
-
 
         @NotNull
         @NotBlank

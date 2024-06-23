@@ -14,5 +14,11 @@ COPY --from=builder app/dependencies/ ./
 COPY --from=builder app/spring-boot-loader/ ./
 COPY --from=builder app/snapshot-dependencies/ ./
 COPY --from=builder app/application/ ./
+
+
+ENV PGHOST=db
+ENV PGUSER=postgres
+ENV PGPASSWORD=postgres
+ENV PGDATABASE=postgres
 ENTRYPOINT ["java", "org.springframework.boot.loader.launch.JarLauncher"]
 

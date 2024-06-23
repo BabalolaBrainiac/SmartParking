@@ -11,7 +11,7 @@ import org.mapstruct.factory.Mappers;
 public interface DriverMapper {
         DriverMapper INSTANCE = Mappers.getMapper(DriverMapper.class);
 
-        @Mapping(source = "userTypeEnum", target = "userTypeEnum")
+        @Mapping(source = "userType", target = "userType")
         DriverDTO driverToDriverDTO(Driver driver);
 
         @Mapping(source = "userType", target = "userType")
