@@ -8,6 +8,7 @@ import jakarta.validation.constraints.Null;
 public record AdminUserDto(
         @Null
         Long id,
+
         @NotBlank
         String firstName,
 
@@ -16,6 +17,7 @@ public record AdminUserDto(
 
         @NotBlank
         String email,
+
         @Nullable
         String phoneNumber,
 

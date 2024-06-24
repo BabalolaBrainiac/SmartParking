@@ -1,11 +1,15 @@
 package com.babalola.smartparkingapplication.controllers;
 import com.babalola.smartparkingapplication.dtos.AdminUserDto;
+import com.babalola.smartparkingapplication.exceptions.ResourceExistsException;
+import com.babalola.smartparkingapplication.models.AdminUserRequest;
 import com.babalola.smartparkingapplication.services.AdminUserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -26,9 +30,15 @@ public class AdminUserController {
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @PostMapping
-    public ResponseEntity<AdminUserDto> createAdminUser(@RequestBody AdminUserDto adminUserDTO) {
-        AdminUserDto savedAdminUser = adminUserService.save(adminUserDTO);
-        return ResponseEntity.ok(savedAdminUser);
+    public ResponseEntity<?> createAdminUser(@RequestBody AdminUserDto adminUserDto) {
+        try {
+            AdminUserDto savedAdminUser = adminUserService.save(adminUserDto);
+            return new ResponseEntity<>(savedAdminUser, HttpStatus.CREATED);
+        } catch (ResourceExistsException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
+        } catch (Exception e) {
+            return new ResponseEntity<>("An unexpected error occurred", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @Operation(summary = "Get an AdminUser by ID")

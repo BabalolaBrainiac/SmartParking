@@ -3,6 +3,7 @@ package com.babalola.smartparkingapplication.services;
 import com.babalola.smartparkingapplication.domain.mappers.AdminMapper;
 import com.babalola.smartparkingapplication.domain.model.AdminUser;
 import com.babalola.smartparkingapplication.dtos.AdminUserDto;
+import com.babalola.smartparkingapplication.exceptions.ResourceExistsException;
 import com.babalola.smartparkingapplication.repositories.AdminRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,8 +26,21 @@ public class AdminUserServiceImpl implements AdminUserService {
 
     @Override
     public AdminUserDto save(AdminUserDto adminUserDto) {
+        // Check if a user with the same email or phone number already exists
+        Optional<AdminUser> existingUserByEmail = adminRepository.findByEmail(adminUserDto.email());
+        Optional<AdminUser> existingUserByPhoneNumber = adminRepository.findByPhoneNumber(adminUserDto.phoneNumber());
+
+        if (existingUserByEmail.isPresent() || existingUserByPhoneNumber.isPresent()) {
+            throw new ResourceExistsException("User with the same email or phone number already exists");
+        }
+
+        // Convert DTO to entity
         AdminUser adminUser = adminMapper.adminDTOToAdmin(adminUserDto);
+
+        // Save the user
         adminUser = adminRepository.save(adminUser);
+
+        // Convert entity back to DTO and return
         return adminMapper.adminToAdminDTO(adminUser);
     }
 
