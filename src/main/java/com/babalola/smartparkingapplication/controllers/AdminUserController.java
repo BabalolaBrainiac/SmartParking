@@ -1,7 +1,7 @@
 package com.babalola.smartparkingapplication.controllers;
+import com.babalola.smartparkingapplication.constants.ApplicationUrlMapping;
 import com.babalola.smartparkingapplication.dtos.AdminUserDto;
 import com.babalola.smartparkingapplication.exceptions.ResourceExistsException;
-import com.babalola.smartparkingapplication.models.AdminUserRequest;
 import com.babalola.smartparkingapplication.services.AdminUserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -9,14 +9,17 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import static com.babalola.smartparkingapplication.controllers.AdminUserController.AdminUserBaseUrl;
+
 @RestController
-@RequestMapping("/admin")
+@RequestMapping(AdminUserBaseUrl)
 public class AdminUserController {
+    public static final String AdminUserBaseUrl = ApplicationUrlMapping.ADMIN_USER_API;
+
     private final AdminUserService adminUserService;
     @Autowired
     public AdminUserController(AdminUserService adminUserService) {

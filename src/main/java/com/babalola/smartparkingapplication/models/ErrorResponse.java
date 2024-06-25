@@ -2,7 +2,6 @@ package com.babalola.smartparkingapplication.models;
 
 
 import lombok.Data;
-import org.springframework.http.HttpStatus;
 
 @Data
 public class ErrorResponse {

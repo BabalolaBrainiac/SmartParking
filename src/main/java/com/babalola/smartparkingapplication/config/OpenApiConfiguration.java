@@ -10,7 +10,7 @@ import io.swagger.v3.oas.models.info.Contact;
 @Configuration
 public class OpenApiConfiguration {
 
-    public static final String[] SWAGGER_AUTH_WHITELIST = new String[]{"/**/swagger-ui.html", "/**/webjars/**", "/**/swagger-resources", "/**/swagger-resources/**", "/**/v2/api-docs", "/**/configuration/ui", "/**/configuration/security", "/**/swagger-ui/**", "/**/v3/api-docs/**"};
+    public static final String[] SWAGGER_AUTH_WHITELIST = new String[]{"/**/swagger-ui.html", "/**/webjars/**", "/**/swagger-resources", "/**/swagger-resources/**", "/**/v1/api-docs", "/**/configuration/ui", "/**/configuration/security", "/**/swagger-ui/**", "/**/v2/api-docs/**"};
 
     @Bean
     public OpenAPI baseOpenAPI(){

@@ -1,4 +1,4 @@
-package com.babalola.smartparkingapplication.domain.model;
+package com.babalola.smartparkingapplication.domain.entities;
 
 import com.babalola.smartparkingapplication.domain.enums.UserTypeEnum;
 import jakarta.persistence.*;
@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 @Data
-public abstract class BaseUser extends BaseEntity {
+public abstract class BaseUser extends BaseEntity<Long> {
 
     @Column(name = "first_name", nullable = false)
     @NotBlank(message = "First name is mandatory")

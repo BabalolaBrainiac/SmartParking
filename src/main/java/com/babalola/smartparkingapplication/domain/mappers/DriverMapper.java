@@ -1,13 +1,13 @@
 package com.babalola.smartparkingapplication.domain.mappers;
 
 
-import com.babalola.smartparkingapplication.domain.model.Driver;
+import com.babalola.smartparkingapplication.domain.entities.Driver;
 import com.babalola.smartparkingapplication.dtos.DriverDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
-@Mapper
+@Mapper(componentModel = "spring")
 public interface DriverMapper {
         DriverMapper INSTANCE = Mappers.getMapper(DriverMapper.class);
 

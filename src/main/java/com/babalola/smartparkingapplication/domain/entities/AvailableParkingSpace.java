@@ -1,4 +1,4 @@
-package com.babalola.smartparkingapplication.domain.model;
+package com.babalola.smartparkingapplication.domain.entities;
 import com.babalola.smartparkingapplication.domain.enums.VehicleTypeEnum;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;

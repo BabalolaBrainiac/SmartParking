@@ -1,8 +1,6 @@
-package com.babalola.smartparkingapplication.domain.model;
+package com.babalola.smartparkingapplication.domain.entities;
 import com.babalola.smartparkingapplication.domain.enums.UserTypeEnum;
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
 
 import java.util.List;
 
