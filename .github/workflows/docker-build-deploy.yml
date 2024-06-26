@@ -1,9 +1,9 @@
 name: Java CI with Maven
 on:
   push:
-    branches: [ "master" ]
+    branches: [ "main" ]
   pull_request:
-    branches: [ "master" ]
+    branches: [ "main" ]
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -11,27 +11,14 @@ jobs:
       postgres:
         image: postgres:latest
         env:
-          POSTGRES_PASSWORD: password
+          POSTGRES_PASSWORD: yourpassword
         ports:
-<<<<<<< Updated upstream
-          - 5432/tcp
-        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
-    env:
-      SPRING_APPLICATION_NAME: SmartParkingApplication
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/postgres
-      SPRING_DATASOURCE_USERNAME: newuser
-      SPRING_DATASOURCE_PASSWORD: password
-      SPRING_JPA_DATABASE_PLATFORM: org.hibernate.dialect.PostgreSQLDialect
-      SPRING_JPA_HIBERNATE_DDL_AUTO: update
-
-=======
           - 5432:5432
         options: >-
           --health-cmd pg_isready
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
->>>>>>> Stashed changes
     steps:
       - uses: actions/checkout@v3
       - uses: graalvm/setup-graalvm@v1
