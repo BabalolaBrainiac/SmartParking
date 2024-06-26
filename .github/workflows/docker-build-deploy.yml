@@ -1,9 +1,11 @@
 name: Java CI with Maven
+
 on:
   push:
     branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -12,9 +14,6 @@ jobs:
         image: postgres:latest
         env:
           POSTGRES_PASSWORD: password
-          SPRING_APPLICATION_NAME: SmartParkingApplication
-          SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/postgres
-          SPRING_DATASOURCE_USERNAME: newuser
         ports:
           - 5432:5432
         options: >-
@@ -22,8 +21,10 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
+
     steps:
       - uses: actions/checkout@v3
+
       - uses: graalvm/setup-graalvm@v1
         with:
           java-version: '21'
@@ -33,22 +34,33 @@ jobs:
           components: 'native-image'
           native-image-job-reports: 'true'
           github-token: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Wait for PostgreSQL
         run: sleep 10
+
+      - name: Set up environment variables
+        run: echo "SPRING_APPLICATION_NAME=SmartParkingApplication" >> $GITHUB_ENV
+        run: echo "SPRING_DATASOURCE_URL=jdbc:postgresql://localhost:5432/postgres" >> $GITHUB_ENV
+        run: echo "SPRING_DATASOURCE_USERNAME=postgres" >> $GITHUB_ENV
+        run: echo "SPRING_DATASOURCE_PASSWORD=password" >> $GITHUB_ENV
+
       - name: Build with Maven
         env:
-          SPRING_APPLICATION_NAME: SmartParkingApplication
-          SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/postgres
-          SPRING_DATASOURCE_USERNAME: postgres
-          SPRING_DATASOURCE_PASSWORD: password
+          SPRING_APPLICATION_NAME: ${{ env.SPRING_APPLICATION_NAME }}
+          SPRING_DATASOURCE_URL: ${{ env.SPRING_DATASOURCE_URL }}
+          SPRING_DATASOURCE_USERNAME: ${{ env.SPRING_DATASOURCE_USERNAME }}
+          SPRING_DATASOURCE_PASSWORD: ${{ env.SPRING_DATASOURCE_PASSWORD }}
         run: mvn -Pnative native:compile
+
       - name: Build Docker Image
         run: docker build -t autosite:latest .
+
       - name: Log in to Docker Hub
         uses: docker/login-action@v1
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
+
       - name: Push Docker Image
         run: |
           docker tag autosite:latest mydockeruser/autosite:latest
