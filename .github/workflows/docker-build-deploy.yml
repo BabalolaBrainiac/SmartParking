@@ -2,8 +2,16 @@ name: Docker Build & Deploy
 
 on:
   push:
-    branches:
-      - main
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+env:
+  SPRING_APPLICATION_NAME: ${SPRING_APPLICATION_NAME}
+  SPRING_DATASOURCE_URL: ${SPRING_DATASOURCE_URL}
+  SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME}
+  SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
+  SPRING_JPA_DATABASE_PLATFORM: org.hibernate.dialect.PostgreSQLDialect
 
 jobs:
   build-and-deploy:
@@ -14,8 +22,8 @@ jobs:
         image: postgres:12.2
         env:
           POSTGRES_USER: newuser
-          POSTGRES_PASSWORD: password
           POSTGRES_DB: postgres
+          POSTGRES_PASSWORD: password
         ports:
           - 5432/tcp
         options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
@@ -41,7 +49,7 @@ jobs:
           cache: maven
 
       - name: Build app
-        run: mvn -B package --file pom.xml
+        run: mvn clean package -DskipTests
 
       - name: Build and push Docker image
         env:
