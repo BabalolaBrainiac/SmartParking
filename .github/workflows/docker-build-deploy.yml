@@ -34,22 +34,15 @@ jobs:
           distribution: 'temurin'
           cache: maven
 
-      - name: Set up environment variables
-        run: |
-          echo "SPRING_APPLICATION_NAME=SmartParkingApplication" >> $GITHUB_ENV
-          echo "SPRING_DATASOURCE_URL=jdbc:postgresql://localhost:5432/postgres" >> $GITHUB_ENV
-          echo "SPRING_DATASOURCE_USERNAME=newuser" >> $GITHUB_ENV
-          echo "SPRING_DATASOURCE_PASSWORD=password" >> $GITHUB_ENV
-
       - name: Wait for PostgreSQL
         run: sleep 10
 
       - name: Build app
         env:
-          SPRING_APPLICATION_NAME: ${{ env.SPRING_APPLICATION_NAME }}
-          SPRING_DATASOURCE_URL: ${{ env.SPRING_DATASOURCE_URL }}
-          SPRING_DATASOURCE_USERNAME: ${{ env.SPRING_DATASOURCE_USERNAME }}
-          SPRING_DATASOURCE_PASSWORD: ${{ env.SPRING_DATASOURCE_PASSWORD }}
+          SPRING_APPLICATION_NAME: ${{ secrets.SPRING_APPLICATION_NAME }}
+          SPRING_DATASOURCE_URL: ${{ env.secrets }}
+          SPRING_DATASOURCE_USERNAME: ${{ secrets.SPRING_DATASOURCE_USERNAME }}
+          SPRING_DATASOURCE_PASSWORD: ${{ secrets.SPRING_DATASOURCE_PASSWORD }}
         run: mvn -B package --file pom.xml
 
       - name: Build and push Docker image
