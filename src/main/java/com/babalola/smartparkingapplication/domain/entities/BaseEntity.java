@@ -51,4 +51,5 @@ public abstract class BaseEntity<ID extends Serializable> {
     public void setModifiedDate(LocalDateTime modifiedDate) {
         this.modifiedDate = modifiedDate;
     }
+
 }

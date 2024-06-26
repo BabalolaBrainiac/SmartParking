@@ -1,6 +1,9 @@
 package com.babalola.smartparkingapplication.domain.entities;
 import com.babalola.smartparkingapplication.domain.enums.UserTypeEnum;
 import jakarta.persistence.*;
+import jakarta.persistence.Table;
+
+
 
 import java.util.List;
 

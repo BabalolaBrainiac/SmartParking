@@ -6,6 +6,9 @@ import jakarta.validation.constraints.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import com.github.f4b6a3.uuid.UuidCreator;
+
+import java.util.UUID;
 
 
 @MappedSuperclass
@@ -40,5 +43,16 @@ public abstract class BaseUser extends BaseEntity<Long> {
     @Enumerated(EnumType.STRING)
     @Column(name = "user_type", nullable = false)
     private UserTypeEnum userType;
+
+    @Column(name = "uuid", unique = true, nullable = false, updatable = false)
+    private UUID uuid;
+
+
+    public void onCreate() {
+        super.onCreate();
+        if (uuid == null) {
+            uuid = UuidCreator.getTimeOrderedEpoch();
+        }
+    }
 
 }
