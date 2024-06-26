@@ -39,10 +39,11 @@ jobs:
         run: sleep 10
 
       - name: Set up environment variables
-        run: echo "SPRING_APPLICATION_NAME=SmartParkingApplication" >> $GITHUB_ENV
-        run: echo "SPRING_DATASOURCE_URL=jdbc:postgresql://localhost:5432/postgres" >> $GITHUB_ENV
-        run: echo "SPRING_DATASOURCE_USERNAME=postgres" >> $GITHUB_ENV
-        run: echo "SPRING_DATASOURCE_PASSWORD=password" >> $GITHUB_ENV
+        run: |
+          echo "SPRING_APPLICATION_NAME=SmartParkingApplication" >> $GITHUB_ENV
+          echo "SPRING_DATASOURCE_URL=jdbc:postgresql://localhost:5432/postgres" >> $GITHUB_ENV
+          echo "SPRING_DATASOURCE_USERNAME=postgres" >> $GITHUB_ENV
+          echo "SPRING_DATASOURCE_PASSWORD=password" >> $GITHUB_ENV
 
       - name: Build with Maven
         env:
