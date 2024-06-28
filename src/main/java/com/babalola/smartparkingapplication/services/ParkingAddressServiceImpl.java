@@ -8,6 +8,7 @@ import com.babalola.smartparkingapplication.repositories.ParkAddressRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -29,17 +30,17 @@ public class ParkingAddressServiceImpl implements ParkingAddressService {
     }
 
     @Override
-    @Transactional
-    public ParkAddressDto save(ParkAddressDto parkAddressDto) {
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    public ParkAddressDto save(ParkAddress parkAddressDto) {
         Optional<ParkAddress> existingAddress = parkAddressRepository.findByStreetAndCityAndStateAndZipCode(
-                parkAddressDto.street(), parkAddressDto.city(), parkAddressDto.state(), parkAddressDto.zipCode());
+                parkAddressDto.getStreet(), parkAddressDto.getCity(), parkAddressDto.getState(), parkAddressDto.getZipCode());
 
         if (existingAddress.isPresent()) {
             throw new ResourceExistsException("Address already exists");
         }
 
-        ParkAddress parkAddress = parkAddressMapper.parkAddressDTOToParkAddress(parkAddressDto);
-        parkAddress = parkAddressRepository.save(parkAddress);
+//        ParkAddress parkAddress = parkAddressMapper.parkAddressDTOToParkAddress(parkAddressDto);
+        ParkAddress parkAddress = parkAddressRepository.save(parkAddressDto);
 
         return parkAddressMapper.parkAddressToParkAddressDTO(parkAddress);
     }
@@ -60,7 +61,7 @@ public class ParkingAddressServiceImpl implements ParkingAddressService {
 
 
     @Override
-    @Transactional
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     public ParkAddressDto update(ParkAddressDto parkAddressDto) {
         if (parkAddressRepository.existsById(parkAddressDto.id())) {
             ParkAddress parkAddress = parkAddressMapper.parkAddressDTOToParkAddress(parkAddressDto);

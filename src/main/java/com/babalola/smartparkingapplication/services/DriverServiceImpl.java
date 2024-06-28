@@ -8,6 +8,7 @@ import com.babalola.smartparkingapplication.exceptions.ResourceExistsException;
 import com.babalola.smartparkingapplication.repositories.DriverRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -17,7 +18,7 @@ import java.util.stream.Collectors;
 
 @Service
 @Slf4j
-@Transactional(readOnly = true)
+@Transactional(readOnly = false)
 public class DriverServiceImpl implements DriverService {
 
     private final DriverRepository driverRepository;
@@ -34,6 +35,7 @@ public class DriverServiceImpl implements DriverService {
      * @return
      */
     @Override
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     public DriverDTO save(DriverDTO driverDTO) {
         Optional<Driver> existingUserByEmail = driverRepository.findByEmail(driverDTO.email());
         Optional<Driver> existingUserByPhoneNumber = driverRepository.findByPhoneNumber(driverDTO.phoneNumber());
@@ -73,6 +75,7 @@ public class DriverServiceImpl implements DriverService {
      * @return DriverDto
      */
     @Override
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     public DriverDTO update(DriverDTO driverDTO) {
         if (driverRepository.existsById(driverDTO.id())) {
             Driver driver = driverMapper.driverDTOToDriver(driverDTO);

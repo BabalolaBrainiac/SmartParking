@@ -2,18 +2,15 @@ package com.babalola.smartparkingapplication.domain.entities;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
-@Getter
 @MappedSuperclass
 @NoArgsConstructor
 @AllArgsConstructor
+@Data
 public abstract class BaseEntity<ID extends Serializable> {
 
     @Id
@@ -30,8 +27,13 @@ public abstract class BaseEntity<ID extends Serializable> {
     @PastOrPresent(message = "Modified date cannot be in the future")
     private LocalDateTime modifiedDate;
 
+
+    @Column(columnDefinition = "boolean default false")
+    private Boolean isDeleted;
+
     @PrePersist
     protected void onCreate() {
+        isDeleted = false;
         createdDate = LocalDateTime.now();
     }
 

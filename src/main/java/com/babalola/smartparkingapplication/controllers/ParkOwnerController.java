@@ -2,6 +2,8 @@ package com.babalola.smartparkingapplication.controllers;
 
 import com.babalola.smartparkingapplication.constants.ApplicationUrlMapping;
 import com.babalola.smartparkingapplication.dtos.ParkOwnerDto;
+import com.babalola.smartparkingapplication.dtos.ParkingGarageDto;
+import com.babalola.smartparkingapplication.dtos.ParkingGarageResponseDto;
 import com.babalola.smartparkingapplication.exceptions.ResourceExistsException;
 import com.babalola.smartparkingapplication.services.ParkOwnerService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -13,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 import static com.babalola.smartparkingapplication.controllers.ParkOwnerController.ParkOwnerBaseUrl;
 
@@ -76,7 +79,7 @@ public class ParkOwnerController {
     @PutMapping("/{id}")
     public ResponseEntity<?> updateParkOwner(@PathVariable Long id, @RequestBody ParkOwnerDto parkOwnerDto) {
         try {
-            ParkOwnerDto updatedParkOwner = parkOwnerService.update(parkOwnerDto);
+            ParkOwnerDto updatedParkOwner = parkOwnerService.update(id, parkOwnerDto);
             return ResponseEntity.ok(updatedParkOwner);
         } catch (RuntimeException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
@@ -95,6 +98,37 @@ public class ParkOwnerController {
             return ResponseEntity.noContent().build();
         } catch (RuntimeException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @Operation(summary = "Get ParkOwner with ParkingGarages")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "ParkOwner fetched successfully"),
+            @ApiResponse(responseCode = "404", description = "ParkOwner not found")
+    })
+    @GetMapping("/{id}/withGarages")
+    public ResponseEntity<ParkOwnerDto> getParkOwnerWithGarages(@PathVariable Long id) {
+        try {
+            ParkOwnerDto parkOwner = parkOwnerService.getParkOwnerWithGarages(id);
+            return ResponseEntity.ok(parkOwner);
+        } catch (RuntimeException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @Operation(summary = "Add a Parking Garage to a ParkOwner")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Parking Garage added successfully"),
+            @ApiResponse(responseCode = "404", description = "ParkOwner not found"),
+            @ApiResponse(responseCode = "400", description = "Invalid input")
+    })
+    @PostMapping("/{ownerId}/garage")
+    public ResponseEntity<?> addParkingGarage(@PathVariable Long ownerId, @RequestBody ParkingGarageDto parkingGarageDto) {
+        try {
+            ParkingGarageResponseDto newParkingGarage = parkOwnerService.addNewParkingGarage(ownerId, parkingGarageDto);
+            return ResponseEntity.ok(newParkingGarage);
+        } catch (RuntimeException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         }
     }
 }

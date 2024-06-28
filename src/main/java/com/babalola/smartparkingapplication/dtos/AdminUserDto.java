@@ -26,5 +26,8 @@ public record AdminUserDto(
 
         @NotNull
         @NotBlank
-        String userType
+        String userType,
+
+        @Null
+        String userId
 ) { }

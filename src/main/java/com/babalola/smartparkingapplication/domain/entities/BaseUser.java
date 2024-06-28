@@ -37,21 +37,18 @@ public abstract class BaseUser extends BaseEntity<Long> {
     @Pattern(regexp = "^\\+?[0-9. ()-]{7,25}$", message = "Phone number is invalid")
     private String phoneNumber;
 
-    @Column(columnDefinition = "boolean default false")
-    private Boolean isDeleted = false;
-
     @Enumerated(EnumType.STRING)
     @Column(name = "user_type", nullable = false)
     private UserTypeEnum userType;
 
     @Column(name = "uuid", unique = true, nullable = false, updatable = false)
-    private UUID uuid;
+    private UUID userId;
 
 
     public void onCreate() {
         super.onCreate();
-        if (uuid == null) {
-            uuid = UuidCreator.getTimeOrderedEpoch();
+        if (userId == null) {
+            userId = UuidCreator.getTimeOrderedEpoch();
         }
     }
 

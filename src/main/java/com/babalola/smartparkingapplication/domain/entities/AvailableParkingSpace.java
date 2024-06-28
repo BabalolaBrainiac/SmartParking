@@ -33,6 +33,6 @@ public class AvailableParkingSpace {
     private Integer availableSpaces;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "parking_garage_id", nullable = false)
+    @JoinColumn(name = "parking_garage_id", nullable = true)
     private ParkingGarage parkingGarage;
 }

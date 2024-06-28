@@ -8,6 +8,7 @@ import com.babalola.smartparkingapplication.repositories.LocationRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -31,6 +32,7 @@ public class LocationServiceImpl implements LocationService {
      * @return
      */
     @Override
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     public LocationDto save(LocationDto locationDto) {
         Optional<Location> existingLocation = locationRepository.findByLatitudeAndLongitude(
                 locationDto.latitude(), locationDto.longitude());
@@ -67,6 +69,7 @@ public class LocationServiceImpl implements LocationService {
      * @return
      */
     @Override
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     public LocationDto update(LocationDto locationDto) {
         return null;
     }

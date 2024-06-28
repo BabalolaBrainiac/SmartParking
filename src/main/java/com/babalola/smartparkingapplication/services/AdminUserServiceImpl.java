@@ -10,6 +10,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -33,9 +34,10 @@ public class AdminUserServiceImpl implements AdminUserService {
     }
 
     @Override
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     public AdminUserDto save(AdminUserDto adminUserDto) {
         Optional<AdminUser> existingUserByEmail = adminRepository.findByEmail(adminUserDto.email());
-        Optional<AdminUser> existingUserByPhoneNumber = adminRepository.findByPhoneNumber(adminUserDto.phoneNumber());
+        Optional<AdminUser> existingUserByPhoneNumber = adminRepository.findByPhoneNumber(adminUserDto. phoneNumber());
 
         if (existingUserByEmail.isPresent() || existingUserByPhoneNumber.isPresent()) {
             throw new ResourceExistsException("User with the same email or phone number already exists");
@@ -61,6 +63,7 @@ public class AdminUserServiceImpl implements AdminUserService {
     }
 
     @Override
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     public AdminUserDto update(AdminUserDto adminUserDto) {
         if (adminRepository.existsById(adminUserDto.id())) {
             AdminUser adminUser = adminMapper.adminDTOToAdmin(adminUserDto);

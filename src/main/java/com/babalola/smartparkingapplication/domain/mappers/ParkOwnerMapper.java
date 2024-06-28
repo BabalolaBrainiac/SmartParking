@@ -11,8 +11,10 @@ public interface ParkOwnerMapper {
     ParkOwnerMapper INSTANCE = Mappers.getMapper(ParkOwnerMapper.class);
 
     @Mapping(source = "userType", target = "userType")
+    @Mapping(target = "parkingGarages", source = "parkingGarages")
     ParkOwnerDto parkOwnerToParkOwnerDTO(ParkOwner parkOwner);
 
     @Mapping(source = "userType", target = "userType")
+    @Mapping(target = "parkingGarages", source = "parkingGarages")
     ParkOwner parkOwnerDTOToParkOwner(ParkOwnerDto parkOwnerDTO);
 }

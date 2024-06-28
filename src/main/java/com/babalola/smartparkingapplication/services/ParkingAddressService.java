@@ -1,5 +1,6 @@
 package com.babalola.smartparkingapplication.services;
 
+import com.babalola.smartparkingapplication.domain.entities.ParkAddress;
 import com.babalola.smartparkingapplication.dtos.LocationDto;
 import com.babalola.smartparkingapplication.dtos.ParkAddressDto;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,5 +15,5 @@ public interface ParkingAddressService {
     ParkAddressDto update(ParkAddressDto parkAddressDto);
     void deleteById(Long id);
     @Transactional
-    ParkAddressDto save(ParkAddressDto parkAddressDto);
+    ParkAddressDto save(ParkAddress parkAddressDto);
 }
