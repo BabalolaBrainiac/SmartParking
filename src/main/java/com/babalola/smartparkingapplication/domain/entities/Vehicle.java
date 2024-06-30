@@ -1,4 +1,4 @@
-package com.babalola.smartparkingapplication.domain.model;
+package com.babalola.smartparkingapplication.domain.entities;
 
 
 import jakarta.persistence.*;

@@ -1,10 +1,12 @@
-package com.babalola.smartparkingapplication.domain.model;
+package com.babalola.smartparkingapplication.domain.entities;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
+import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+
 
 @Entity
 @Table(name = "locations")
@@ -14,10 +16,10 @@ import lombok.NoArgsConstructor;
 public class Location extends BaseEntity {
 
     @Column(nullable = false)
-    private String latitude;
+    private double latitude;
 
     @Column(nullable = false)
-    private String longitude;
+    private double longitude;
 
     @Column(nullable = true)
     private String description;

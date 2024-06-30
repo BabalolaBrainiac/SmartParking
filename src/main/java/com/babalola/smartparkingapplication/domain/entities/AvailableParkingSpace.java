@@ -1,4 +1,4 @@
-package com.babalola.smartparkingapplication.domain.model;
+package com.babalola.smartparkingapplication.domain.entities;
 import com.babalola.smartparkingapplication.domain.enums.VehicleTypeEnum;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
@@ -13,6 +13,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
 
 @Entity
 @Table(name = "available_parking_spaces")
@@ -32,6 +33,6 @@ public class AvailableParkingSpace {
     private Integer availableSpaces;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "parking_garage_id", nullable = false)
+    @JoinColumn(name = "parking_garage_id", nullable = true)
     private ParkingGarage parkingGarage;
 }

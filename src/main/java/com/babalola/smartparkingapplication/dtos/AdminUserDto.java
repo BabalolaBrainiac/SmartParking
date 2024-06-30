@@ -6,7 +6,6 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Null;
 
 public record AdminUserDto(
-
         @Null
         Long id,
 
@@ -18,14 +17,17 @@ public record AdminUserDto(
 
         @NotBlank
         String email,
+
         @Nullable
         String phoneNumber,
 
         @Null
         Boolean isDeleted,
 
-
         @NotNull
         @NotBlank
-        String userType
+        String userType,
+
+        @Null
+        String userId
 ) { }

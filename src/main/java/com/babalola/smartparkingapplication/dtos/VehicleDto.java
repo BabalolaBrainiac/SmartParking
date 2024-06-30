@@ -4,7 +4,7 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
-public record vehicleDto(
+public record VehicleDto(
         @NotBlank(message = "Make is mandatory")
         String make,
 

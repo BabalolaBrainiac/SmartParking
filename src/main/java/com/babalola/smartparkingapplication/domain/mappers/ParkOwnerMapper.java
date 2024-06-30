@@ -1,18 +1,20 @@
 package com.babalola.smartparkingapplication.domain.mappers;
 
-import com.babalola.smartparkingapplication.domain.model.ParkOwner;
+import com.babalola.smartparkingapplication.domain.entities.ParkOwner;
 import com.babalola.smartparkingapplication.dtos.ParkOwnerDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
-@Mapper
+@Mapper(componentModel = "spring")
 public interface ParkOwnerMapper {
     ParkOwnerMapper INSTANCE = Mappers.getMapper(ParkOwnerMapper.class);
 
-    @Mapping(source = "userType", target = "userTypeEnum")
+    @Mapping(source = "userType", target = "userType")
+    @Mapping(target = "parkingGarages", source = "parkingGarages")
     ParkOwnerDto parkOwnerToParkOwnerDTO(ParkOwner parkOwner);
 
-    @Mapping(source = "userTypeEnum", target = "userType")
+    @Mapping(source = "userType", target = "userType")
+    @Mapping(target = "parkingGarages", source = "parkingGarages")
     ParkOwner parkOwnerDTOToParkOwner(ParkOwnerDto parkOwnerDTO);
 }

@@ -1,13 +1,17 @@
-package com.babalola.smartparkingapplication.domain.model;
+package com.babalola.smartparkingapplication.domain.entities;
 import com.babalola.smartparkingapplication.domain.enums.UserTypeEnum;
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import jakarta.persistence.Table;
+
+
 
 import java.util.List;
 
 @Entity
-@Table(name = "drivers")
+@Table(name = "drivers", indexes = {
+        @Index(name = "idx_first_name", columnList = "firstName"),
+        @Index(name = "idx_phone_number", columnList = "phoneNumber")
+})
 public class Driver extends BaseUser {
 
     @ManyToMany(mappedBy = "drivers")
