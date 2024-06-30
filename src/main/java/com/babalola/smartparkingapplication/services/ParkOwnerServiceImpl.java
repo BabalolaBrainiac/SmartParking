@@ -118,7 +118,7 @@ public class ParkOwnerServiceImpl implements ParkOwnerService {
     @Transactional
     public ParkingGarageResponseDto addNewParkingGarage(Long ownerId, ParkingGarageDto parkingGarageDto) {
         ParkOwner parkOwner = parkOwnerRepository.findById(ownerId)
-                .orElseThrow(() -> new ResourceNotFoundException("ParkOwner not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Park owner with id " + parkingGarageDto.id() + "not found"));
 
         LocationDto locationDto = parkingGarageDto.location();
         Location location = new Location();
@@ -146,17 +146,18 @@ public class ParkOwnerServiceImpl implements ParkOwnerService {
         var newGarage = parkingGarageRepository.save(parkingGarage);
 
         if (!parkingGarageDto.availableParkingSpaces().isEmpty()) {
-            List<AvailableParkingSpace> parkingSpaces = AvailableParkingSpaceMapper.INSTANCE
-                    .availableParkingSpaceDtosToAvailableParkingSpaces(parkingGarageDto.availableParkingSpaces());
-            parkingSpaces.forEach(space -> {
-                space.setAvailableSpaces(space.getAvailableSpaces());
-                space.setParkingGarage(newGarage);
-                space.setVehicleType(space.getVehicleType());
-            } );
+            List<AvailableParkingSpace> parkingSpaces = parkingGarageDto.availableParkingSpaces().stream()
+                    .map(spaceDto -> {
+                        AvailableParkingSpace space = AvailableParkingSpaceMapper.INSTANCE.toEntity(spaceDto);
+                        space.setParkingGarage(newGarage);
+                        return space;
+                    })
+                    .collect(Collectors.toList());
+
             availableParkingSpaceRepository.saveAll(parkingSpaces);
             parkingGarage.setAvailableParkingSpaces(parkingSpaces);
         }
-            parkingGarageRepository.save(newGarage);
+        parkingGarageRepository.save(newGarage);
 
 
         if (parkingGarage.getVehicles() == null) {

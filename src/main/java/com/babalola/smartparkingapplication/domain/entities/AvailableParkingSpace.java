@@ -32,6 +32,9 @@ public class AvailableParkingSpace {
     @Column(nullable = false)
     private Integer availableSpaces;
 
+    @Column(nullable = true)
+    private Boolean isOperational = false;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parking_garage_id", nullable = true)
     private ParkingGarage parkingGarage;
