@@ -1,4 +1,4 @@
-name: Docker Build & Deploy
+name: Java CI with Maven
 
 on:
   push:
@@ -7,55 +7,39 @@ on:
     branches: [ "main" ]
 
 env:
-  SPRING_APPLICATION_NAME: ${SPRING_APPLICATION_NAME}
-  SPRING_DATASOURCE_URL: ${SPRING_DATASOURCE_URL}
-  SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME}
-  SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
+  SPRING_APPLICATION_NAME: SmartParkingApplication
+  SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/postgres
+  SPRING_DATASOURCE_USERNAME: newuser
+  SPRING_DATASOURCE_PASSWORD: password
   SPRING_JPA_DATABASE_PLATFORM: org.hibernate.dialect.PostgreSQLDialect
 
 jobs:
-  build-and-deploy:
+  build:
     runs-on: ubuntu-latest
 
     services:
       postgres:
-        image: postgres:12.2
+        image: postgres:latest
         env:
-          POSTGRES_USER: newuser
           POSTGRES_DB: postgres
+          POSTGRES_USER: newuser
           POSTGRES_PASSWORD: password
         ports:
-          - 5432/tcp
-        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
-
-
-    env:
-      SPRING_APPLICATION_NAME: SmartParkingApplication
-      SPRING_DATASOURCE_URL: postgres
-      SPRING_DATASOURCE_USERNAME: postgres
-      SPRING_DATASOURCE_PASSWORD: postgres
-      SPRING_JPA_DATABASE_PLATFORM: org.hibernate.dialect.PostgreSQLDialect
-      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Set up JDK 21
+      - uses: actions/checkout@v2
+      - name: Set up Java version 21
         uses: actions/setup-java@v2
         with:
           java-version: '21'
           distribution: 'temurin'
           cache: maven
 
-      - name: Build app
-        run: mvn clean package -DskipTests
-
-      - name: Build and push Docker image
-        env:
-          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
-          DOCKERHUB_ACCESS_TOKEN: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
-        run: |
-          docker build -t $DOCKERHUB_USERNAME/smartparkingapplication:latest .
-          echo $DOCKERHUB_ACCESS_TOKEN | docker login -u $DOCKERHUB_USERNAME --password-stdin
-          docker push $DOCKERHUB_USERNAME/smartparkingapplication:latest
+      - name: Build with Maven
+        run:  mvn clean package -DskipTests
