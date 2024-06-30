@@ -13,6 +13,9 @@ public class ApplicationUrlMapping {
         public static final String DRIVER_API = ApplicationVersion + "/api/driver";
         public static final String PARK_OWNER_API = ApplicationVersion + "/api/owner";
 
+        public static final String PARKING_SPACE = ApplicationVersion + "/api/space";
+
+
 
 
 

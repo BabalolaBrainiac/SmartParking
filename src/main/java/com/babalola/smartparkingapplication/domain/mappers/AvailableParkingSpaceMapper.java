@@ -13,9 +13,13 @@ public interface AvailableParkingSpaceMapper {
 
     AvailableParkingSpaceMapper INSTANCE = Mappers.getMapper(AvailableParkingSpaceMapper.class);
 
+    @Mapping(target = "parkingGarage", ignore = true)
+    AvailableParkingSpaceDto toDto(AvailableParkingSpace availableParkingSpace);
+
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "parkingGarage", ignore = true)
-    AvailableParkingSpace availableParkingSpaceDtoToAvailableParkingSpace(AvailableParkingSpaceDto dto);
+    AvailableParkingSpace toEntity(AvailableParkingSpaceDto availableParkingSpaceDto);
 
-    List<AvailableParkingSpace> availableParkingSpaceDtosToAvailableParkingSpaces(List<AvailableParkingSpaceDto> dtos);
+    List<AvailableParkingSpaceDto> toDtos(List<AvailableParkingSpace> entities);
+    List<AvailableParkingSpace> toEntities(List<AvailableParkingSpaceDto> dtos);
 }
