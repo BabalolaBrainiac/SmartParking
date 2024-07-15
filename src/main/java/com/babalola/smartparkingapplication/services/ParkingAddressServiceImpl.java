@@ -31,18 +31,24 @@ public class ParkingAddressServiceImpl implements ParkingAddressService {
 
     @Override
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
-    public ParkAddressDto save(ParkAddress parkAddressDto) {
+    public ParkAddress save(ParkAddress parkAddressDto) {
         Optional<ParkAddress> existingAddress = parkAddressRepository.findByStreetAndCityAndStateAndZipCode(
                 parkAddressDto.getStreet(), parkAddressDto.getCity(), parkAddressDto.getState(), parkAddressDto.getZipCode());
 
         if (existingAddress.isPresent()) {
-            throw new ResourceExistsException("Address already exists");
+            return existingAddress.get();
+//            throw new ResourceExistsException("Address already exists");
         }
 
-//        ParkAddress parkAddress = parkAddressMapper.parkAddressDTOToParkAddress(parkAddressDto);
-        ParkAddress parkAddress = parkAddressRepository.save(parkAddressDto);
+        ParkAddress parkAddress = new ParkAddress();
+        parkAddress.setCity(parkAddressDto.getCity());
+        parkAddress.setState(parkAddressDto.getState());
+        parkAddress.setStreet(parkAddressDto.getStreet());
+        parkAddress.setZipCode(parkAddressDto.getZipCode());
+        parkAddress.setLocation(parkAddressDto.getLocation());
 
-        return parkAddressMapper.parkAddressToParkAddressDTO(parkAddress);
+       return parkAddressRepository.save(parkAddressDto);
+
     }
 
 

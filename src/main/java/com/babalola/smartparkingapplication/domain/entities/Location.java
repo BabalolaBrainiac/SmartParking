@@ -2,10 +2,10 @@ package com.babalola.smartparkingapplication.domain.entities;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
-import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import org.locationtech.jts.geom.Point;
 
 
 @Entity
@@ -23,4 +23,7 @@ public class Location extends BaseEntity {
 
     @Column(nullable = true)
     private String description;
+
+    @Column(nullable = false, columnDefinition = "geometry(Point, 4326)")
+    private Point location;
 }

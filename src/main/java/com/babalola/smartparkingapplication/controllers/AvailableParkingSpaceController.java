@@ -61,7 +61,7 @@ public class AvailableParkingSpaceController {
         return ResponseEntity.ok(spaces);
     }
 
-    @GetMapping("/vehicle-type/{vehicleType}")
+    @GetMapping("/vehicle/{vehicleType}")
     public ResponseEntity<List<AvailableParkingSpaceDto>> getByVehicleType(@PathVariable String vehicleType) {
         VehicleTypeEnum vehicleTypeEnum = VehicleTypeEnum.valueOf(vehicleType.toUpperCase());
         List<AvailableParkingSpaceDto> spaces = availableParkingSpaceService.findByVehicleType(vehicleTypeEnum);

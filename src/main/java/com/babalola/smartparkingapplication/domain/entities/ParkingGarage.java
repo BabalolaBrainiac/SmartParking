@@ -14,19 +14,19 @@ import java.util.List;
 @NoArgsConstructor
 public class ParkingGarage extends BaseEntity {
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "address_id", nullable = false)
     private ParkAddress address;
 
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "location_id", nullable = false)
     private Location location;
 
-    @OneToMany(mappedBy = "parkingGarage", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "parkingGarage", cascade = CascadeType.MERGE, orphanRemoval = true)
     private List<Vehicle> vehicles;
 
-    @OneToMany(mappedBy = "parkingGarage", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "parkingGarage", cascade = CascadeType.MERGE, orphanRemoval = true)
     private List<AvailableParkingSpace> availableParkingSpaces;
 
     @ManyToOne(fetch = FetchType.LAZY)

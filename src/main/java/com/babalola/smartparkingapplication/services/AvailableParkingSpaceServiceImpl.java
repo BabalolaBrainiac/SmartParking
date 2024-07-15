@@ -1,6 +1,7 @@
 package com.babalola.smartparkingapplication.services;
 
 import com.babalola.smartparkingapplication.domain.entities.AvailableParkingSpace;
+import com.babalola.smartparkingapplication.domain.entities.Location;
 import com.babalola.smartparkingapplication.domain.enums.VehicleTypeEnum;
 import com.babalola.smartparkingapplication.domain.mappers.AvailableParkingSpaceMapper;
 import com.babalola.smartparkingapplication.dtos.AvailableParkingSpaceDto;
@@ -68,24 +69,47 @@ public class AvailableParkingSpaceServiceImpl implements AvailableParkingSpaceSe
 
     @Transactional(readOnly = true)
     public List<AvailableParkingSpaceDto> findByGarageId(Long garageId) {
-        return availableParkingSpaceRepository.findByParkingGarageId(garageId).stream()
+        List<AvailableParkingSpaceDto> spaces = availableParkingSpaceRepository.findByParkingGarageId(garageId).stream()
                 .map(availableParkingSpaceMapper::toDto)
                 .collect(Collectors.toList());
+
+        if(spaces.isEmpty()) {
+            throw new ResourceNotFoundException("No available spaces available for given resource");
+        }
+
+        return spaces;
     }
 
     @Transactional(readOnly = true)
     public List<AvailableParkingSpaceDto> findByVehicleType(VehicleTypeEnum vehicleType) {
-        return availableParkingSpaceRepository.findByVehicleType(vehicleType).stream()
+        List<AvailableParkingSpaceDto> spaces = availableParkingSpaceRepository.findByVehicleType(vehicleType).stream()
                 .map(availableParkingSpaceMapper::toDto)
                 .collect(Collectors.toList());
+
+        if(spaces.isEmpty()) {
+            throw new ResourceNotFoundException("No available spaces available for given resource");
+        }
+
+        return spaces;
     }
 
     @Transactional(readOnly = true)
     public List<AvailableParkingSpaceDto> findByLocation(double latitude, double longitude) {
-        return locationRepository.findByLatitudeAndLongitude(latitude, longitude)
-                .map(location -> availableParkingSpaceRepository.findByParkingGarage_Location(location).stream()
-                        .map(availableParkingSpaceMapper::toDto)
-                        .collect(Collectors.toList()))
-                .orElseThrow(() -> new ResourceNotFoundException("Location not found"));
+        List<Location> locations = locationRepository.findWithinDistance(longitude, latitude, 10);
+
+        if (locations.isEmpty()) {
+            throw new ResourceNotFoundException("No locations found within the provided distance");
+        }
+
+        List<AvailableParkingSpaceDto> parkingSpaceDtos = locations.stream()
+                .flatMap(location -> availableParkingSpaceRepository.findByParkingGarageLocation(location).stream())
+                .map(availableParkingSpaceMapper::toDto)
+                .collect(Collectors.toList());
+
+        if (parkingSpaceDtos.isEmpty()) {
+            throw new ResourceNotFoundException("No parking spaces found for the provided locations");
+        }
+
+        return parkingSpaceDtos;
     }
 }

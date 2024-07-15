@@ -1,9 +1,7 @@
 package com.babalola.smartparkingapplication.domain.entities;
 
 import com.babalola.smartparkingapplication.domain.enums.UserTypeEnum;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Index;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -15,6 +13,10 @@ import lombok.EqualsAndHashCode;
 })
 @Data
 public class AdminUser extends BaseUser {
+
+    @OneToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 
     public AdminUser() {
         this.setUserType(UserTypeEnum.ADMIN);

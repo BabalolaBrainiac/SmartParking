@@ -15,7 +15,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 
 import static com.babalola.smartparkingapplication.controllers.ParkOwnerController.ParkOwnerBaseUrl;
 
@@ -125,7 +124,7 @@ public class ParkOwnerController {
     @PostMapping("/{ownerId}/garage")
     public ResponseEntity<?> addParkingGarage(@PathVariable Long ownerId, @RequestBody ParkingGarageDto parkingGarageDto) {
         try {
-            ParkingGarageResponseDto newParkingGarage = parkOwnerService.addNewParkingGarage(ownerId, parkingGarageDto);
+            ParkingGarageResponseDto newParkingGarage = parkOwnerService.ownerAddNewParkingGarage(ownerId, parkingGarageDto);
             return ResponseEntity.ok(newParkingGarage);
         } catch (RuntimeException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);

@@ -5,6 +5,10 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Null;
 
+import java.util.UUID;
+
+import static net.sf.jsqlparser.util.validation.metadata.NamedObject.user;
+
 public record AdminUserDto(
         @Null
         Long id,
@@ -29,5 +33,13 @@ public record AdminUserDto(
         String userType,
 
         @Null
-        String userId
+        UUID userId,
+
+         @Nullable UserDto user,
+
+        @Nullable
+        String username,
+
+        @Nullable
+        String password
 ) { }

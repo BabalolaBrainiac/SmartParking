@@ -1,6 +1,7 @@
 package com.babalola.smartparkingapplication.controllers;
 
 import com.babalola.smartparkingapplication.constants.ApplicationUrlMapping;
+import com.babalola.smartparkingapplication.domain.entities.ParkAddress;
 import com.babalola.smartparkingapplication.domain.mappers.ParkAddressMapper;
 import com.babalola.smartparkingapplication.dtos.ParkAddressDto;
 import com.babalola.smartparkingapplication.exceptions.ResourceExistsException;
@@ -37,8 +38,8 @@ public class ParkAddressController {
     @PostMapping
     public ResponseEntity<?> createParkAddress(@RequestBody ParkAddressDto parkAddressDto) {
         try {
-            ParkAddressDto savedParkAddress = parkAddressService.save(ParkAddressMapper.INSTANCE.parkAddressDTOToParkAddress(parkAddressDto));
-            return new ResponseEntity<>(savedParkAddress, HttpStatus.CREATED);
+            ParkAddress savedParkAddress = parkAddressService.save(ParkAddressMapper.INSTANCE.parkAddressDTOToParkAddress(parkAddressDto));
+            return new ResponseEntity<>(ParkAddressMapper.INSTANCE.parkAddressToParkAddressDTO(savedParkAddress), HttpStatus.CREATED);
         } catch (ResourceExistsException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
         } catch (Exception e) {

@@ -14,6 +14,5 @@ public interface ParkingAddressService {
     List<ParkAddressDto> findAll();
     ParkAddressDto update(ParkAddressDto parkAddressDto);
     void deleteById(Long id);
-    @Transactional
-    ParkAddressDto save(ParkAddress parkAddressDto);
+    ParkAddress save(ParkAddress parkAddressDto);
 }

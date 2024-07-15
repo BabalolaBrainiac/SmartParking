@@ -8,12 +8,11 @@ import com.babalola.smartparkingapplication.repositories.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.errors.ResourceNotFoundException;
 import org.hibernate.Hibernate;
-import org.springframework.beans.BeanUtils;
+import org.locationtech.jts.geom.Point;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.lang.reflect.Field;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -24,20 +23,20 @@ public class ParkOwnerServiceImpl implements ParkOwnerService {
 
     private final ParkOwnerRepository parkOwnerRepository;
     private final ParkingGarageRepository parkingGarageRepository;
-    private final ParkAddressRepository parkAddressRepository;
-    private final LocationRepository locationRepository;
+    private final ParkingAddressService parkingAddressService;
     private final ParkOwnerMapper parkOwnerMapper;
-
     private final AvailableParkingSpaceRepository availableParkingSpaceRepository;
 
+    private final LocationService locationService;
 
-    public ParkOwnerServiceImpl(ParkOwnerRepository parkOwnerRepository, ParkingGarageRepository parkingGarageRepository, LocationServiceImpl locationService, ParkAddressRepository parkAddressRepository, LocationRepository locationRepository, ParkOwnerMapper parkOwnerMapper, ParkingAddressServiceImpl parkingAddressService, AvailableParkingSpaceRepository availableParkingSpaceRepository) {
+
+    public ParkOwnerServiceImpl(ParkOwnerRepository parkOwnerRepository, ParkingAddressService parkingAddressService, ParkingGarageRepository parkingGarageRepository, ParkOwnerMapper parkOwnerMapper, AvailableParkingSpaceRepository availableParkingSpaceRepository, LocationService locationService1) {
         this.parkOwnerRepository = parkOwnerRepository;
         this.parkingGarageRepository = parkingGarageRepository;
-        this.parkAddressRepository = parkAddressRepository;
-        this.locationRepository = locationRepository;
+        this.parkingAddressService = parkingAddressService;
         this.parkOwnerMapper = parkOwnerMapper;
         this.availableParkingSpaceRepository = availableParkingSpaceRepository;
+        this.locationService = locationService1;
     }
 
     @Override
@@ -50,7 +49,7 @@ public class ParkOwnerServiceImpl implements ParkOwnerService {
             throw new ResourceExistsException("User with the same email or phone number already exists");
         }
 
-        ParkOwner parkOwner = parkOwnerMapper.parkOwnerDTOToParkOwner(parkOwnerDto);
+        ParkOwner parkOwner = parkOwnerMapper.parkOwnerDtoToParkOwner(parkOwnerDto);
         parkOwnerRepository.save(parkOwner);
         return parkOwnerMapper.parkOwnerToParkOwnerDTO(parkOwner);
     }
@@ -116,16 +115,13 @@ public class ParkOwnerServiceImpl implements ParkOwnerService {
     }
 
     @Transactional
-    public ParkingGarageResponseDto addNewParkingGarage(Long ownerId, ParkingGarageDto parkingGarageDto) {
+    public ParkingGarageResponseDto ownerAddNewParkingGarage(Long ownerId, ParkingGarageDto parkingGarageDto) {
         ParkOwner parkOwner = parkOwnerRepository.findById(ownerId)
                 .orElseThrow(() -> new ResourceNotFoundException("Park owner with id " + parkingGarageDto.id() + "not found"));
 
-        LocationDto locationDto = parkingGarageDto.location();
-        Location location = new Location();
-        location.setLatitude(locationDto.latitude());
-        location.setLongitude(locationDto.longitude());
-        location.setDescription(locationDto.description());
-        location = locationRepository.save(location);
+
+        Location location = this.locationService.save(parkingGarageDto.location());
+
 
         ParkAddressDto addressDto = parkingGarageDto.address();
         ParkAddress parkAddress = new ParkAddress();
@@ -134,9 +130,7 @@ public class ParkOwnerServiceImpl implements ParkOwnerService {
         parkAddress.setStreet(addressDto.street());
         parkAddress.setZipCode(addressDto.zipCode());
         parkAddress.setLocation(location);
-        parkAddress = parkAddressRepository.save(parkAddress);
-
-        //var parkingSpaces = availableParkingSpaceRepository.saveAll(AvailableParkingSpaceMapper.INSTANCE.availableParkingSpaceDtosToAvailableParkingSpaces(parkingGarageDto.availableParkingSpaces()));
+        parkAddress = this.parkingAddressService.save(parkAddress);
 
 
         ParkingGarage parkingGarage = new ParkingGarage();

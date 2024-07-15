@@ -1,6 +1,8 @@
 package com.babalola.smartparkingapplication.controllers;
 
 import com.babalola.smartparkingapplication.constants.ApplicationUrlMapping;
+import com.babalola.smartparkingapplication.domain.entities.Location;
+import com.babalola.smartparkingapplication.domain.mappers.LocationMapper;
 import com.babalola.smartparkingapplication.dtos.LocationDto;
 import com.babalola.smartparkingapplication.exceptions.ResourceExistsException;
 import com.babalola.smartparkingapplication.services.LocationService;
@@ -36,8 +38,10 @@ public class LocationController {
     @PostMapping
     public ResponseEntity<?> createLocation(@RequestBody LocationDto locationDto) {
         try {
-            LocationDto savedLocation = locationService.save(locationDto);
-            return new ResponseEntity<>(savedLocation, HttpStatus.CREATED);
+
+
+            Location savedLocation = locationService.save(locationDto);
+            return new ResponseEntity<>(LocationMapper.INSTANCE.locationToLocationDTO(savedLocation), HttpStatus.CREATED);
         } catch (ResourceExistsException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
         } catch (Exception e) {
@@ -86,5 +90,10 @@ public class LocationController {
     public ResponseEntity<Void> deleteLocation(@PathVariable Long id) {
         locationService.deleteById(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/proximity")
+    public List<LocationDto> findWithinDistance(@RequestParam double longitude, @RequestParam double latitude, @RequestParam double distanceInMeters) {
+        return locationService.findWithinDistance(longitude, latitude, distanceInMeters);
     }
 }

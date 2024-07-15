@@ -1,5 +1,4 @@
 package com.babalola.smartparkingapplication.services;
-import com.babalola.smartparkingapplication.domain.entities.ParkingGarage;
 import com.babalola.smartparkingapplication.dtos.ParkOwnerDto;
 import com.babalola.smartparkingapplication.dtos.ParkingGarageDto;
 import com.babalola.smartparkingapplication.dtos.ParkingGarageResponseDto;
@@ -17,6 +16,6 @@ public interface ParkOwnerService {
 
     ParkOwnerDto getParkOwnerWithGarages(Long id);
 
-    ParkingGarageResponseDto addNewParkingGarage(Long ownerId, ParkingGarageDto parkingGarageDto);
+    ParkingGarageResponseDto ownerAddNewParkingGarage(Long ownerId, ParkingGarageDto parkingGarageDto);
 
 }

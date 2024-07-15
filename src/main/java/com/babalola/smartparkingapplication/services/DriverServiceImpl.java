@@ -44,7 +44,7 @@ public class DriverServiceImpl implements DriverService {
             throw new ResourceExistsException("User with the same email or phone number already exists");
         }
 
-        Driver driver = driverMapper.driverDTOToDriver(driverDTO);
+        Driver driver = driverMapper.driverDtoToDriver(driverDTO);
 
       driverRepository.save(driver);
 
@@ -78,7 +78,7 @@ public class DriverServiceImpl implements DriverService {
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     public DriverDTO update(DriverDTO driverDTO) {
         if (driverRepository.existsById(driverDTO.id())) {
-            Driver driver = driverMapper.driverDTOToDriver(driverDTO);
+            Driver driver = driverMapper.driverDtoToDriver(driverDTO);
            driverRepository.save(driver);
             return driverMapper.driverToDriverDTO(driver);
         } else {

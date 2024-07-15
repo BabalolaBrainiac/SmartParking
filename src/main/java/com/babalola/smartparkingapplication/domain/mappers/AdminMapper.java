@@ -13,21 +13,10 @@ import java.util.UUID;
 public interface AdminMapper {
     AdminMapper INSTANCE = Mappers.getMapper(AdminMapper.class);
 
-    @Named("uuidToString")
-    static String uuidToString(UUID uuid) {
-        return uuid != null ? uuid.toString() : null;
-    }
 
-    @Named("stringToUuid")
-    static UUID stringToUuid(String string) {
-        return string != null ? UUID.fromString(string) : null;
-    }
-
-    @Mapping(source = "userType", target = "userType")
-    @Mapping(source = "userId", target = "userId", qualifiedByName = "uuidToString")
+    @Mapping(source = "user", target = "user")
     AdminUserDto adminToAdminDTO(AdminUser admin);
 
-    @Mapping(source = "userType", target = "userType")
-    @Mapping(source = "userId", target = "userId", qualifiedByName = "stringToUuid")
+    @Mapping(source = "user", target = "user")
     AdminUser adminDTOToAdmin(AdminUserDto adminDTO);
 }

@@ -11,5 +11,4 @@ public interface ParkOwnerRepository extends JpaRepository<ParkOwner, Long> {
 
     Optional<ParkOwner> findByPhoneNumber(String s);
 
-    Optional<ParkOwner> findByUserId(UUID ownerId);
 }

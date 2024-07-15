@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Null;
 import java.util.List;
+import java.util.UUID;
 
 public record ParkOwnerDto (
         @Null
@@ -30,5 +31,10 @@ public record ParkOwnerDto (
         String userType,
 
         @Nullable
-        List<ParkingGarageDto> parkingGarages
+        List<ParkingGarageDto> parkingGarages,
+
+        @Nullable UserDto user,
+
+        @Null
+        UUID userId
 ) { }

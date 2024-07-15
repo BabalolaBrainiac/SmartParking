@@ -13,5 +13,5 @@ public interface AvailableParkingSpaceRepository extends JpaRepository<Available
     List<AvailableParkingSpace> findByParkingGarageParkOwnerId(Long ownerId);
     List<AvailableParkingSpace> findByParkingGarageId(Long garageId);
     List<AvailableParkingSpace> findByVehicleType(VehicleTypeEnum vehicleType);
-    List<AvailableParkingSpace> findByParkingGarage_Location(Location location);
+    List<AvailableParkingSpace> findByParkingGarageLocation(Location location);
 }

@@ -7,6 +7,7 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public enum UserRoles {
+
     ADMIN_USER("admin_user"),
     DRIVER("driver"),
     PARK_OWNER("park_owner");

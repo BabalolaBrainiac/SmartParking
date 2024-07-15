@@ -9,8 +9,8 @@ import java.util.List;
 
 @Entity
 @Table(name = "park_owners", indexes = {
-        @Index(name = "idx_first_name", columnList = "firstName"),
-        @Index(name = "idx_phone_number", columnList = "phoneNumber")
+        @Index(name = "idx_first_name", columnList = "first_name"),
+        @Index(name = "idx_phone_number", columnList = "phone_number")
 })
 @Getter
 @Setter
@@ -18,6 +18,10 @@ public class ParkOwner extends BaseUser {
 
     @OneToMany(mappedBy = "parkOwner", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private List<ParkingGarage> parkingGarages;
+
+    @OneToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 
     public ParkOwner() {
         this.setUserType(UserTypeEnum.PARK_OWNER);

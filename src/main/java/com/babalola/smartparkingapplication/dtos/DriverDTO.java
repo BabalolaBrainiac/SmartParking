@@ -5,6 +5,8 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Null;
 
+import java.util.UUID;
+
 public record DriverDTO (
         @Null
         Long id,
@@ -19,12 +21,16 @@ public record DriverDTO (
         String email,
         @Nullable
         String phoneNumber,
-
         @Null
         Boolean isDeleted,
 
-
         @NotNull
         @NotBlank
-        String userType
+        String userType,
+
+        @Nullable UserDto user,
+
+        @Null
+        UUID userId
+
 ) {}
