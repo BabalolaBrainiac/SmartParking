@@ -12,9 +12,11 @@ import org.springframework.stereotype.Service;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.util.Date;
 
 @Service
 public class JwtTokenProvider {
+
     @Value("${security.jwt.token.secret-key}")
     private String JWT_SECRET;
 
@@ -43,7 +45,7 @@ public class JwtTokenProvider {
         }
     }
 
-    private Instant genAccessExpirationDate() {
-        return LocalDateTime.now().plusHours(2).toInstant(ZoneOffset.of("-03:00"));
+    private Date genAccessExpirationDate() {
+        return Date.from(LocalDateTime.now().plusHours(2).toInstant(ZoneOffset.of("-03:00")));
     }
 }

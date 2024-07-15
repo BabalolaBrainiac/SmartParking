@@ -15,7 +15,6 @@ public class ApplicationUrlMapping {
         public static final String PARKING_SPACE = ApplicationVersion + "/api/space";
         public static final String USERS_API = ApplicationVersion + "/api/user";
         public static final String TRANSACTIONS_API = ApplicationVersion + "/api/transactions";
-
         public static final String BOOKINGS_API = ApplicationVersion + "/api/bookings";
 
 
