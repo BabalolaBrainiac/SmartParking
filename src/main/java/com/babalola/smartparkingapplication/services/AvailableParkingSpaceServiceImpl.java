@@ -70,7 +70,7 @@ public class AvailableParkingSpaceServiceImpl implements AvailableParkingSpaceSe
     @Transactional(readOnly = true)
     public List<AvailableParkingSpaceDto> findByGarageId(Long garageId) {
         List<AvailableParkingSpaceDto> spaces = availableParkingSpaceRepository.findByParkingGarageId(garageId).stream()
-                .map(availableParkingSpaceMapper::toDto)
+                .map(availableParkingSpaceMapper::toDto).sorted()
                 .collect(Collectors.toList());
 
         if(spaces.isEmpty()) {

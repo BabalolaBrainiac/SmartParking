@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.webjars.NotFoundException;
 
 import java.util.List;
 import java.util.Optional;
@@ -70,7 +71,7 @@ public class AdminUserServiceImpl implements AdminUserService {
             adminUser = adminRepository.save(adminUser);
             return adminMapper.adminToAdminDTO(adminUser);
         } else {
-            throw new RuntimeException("AdminUser not found");
+            throw new NotFoundException("AdminUser not found");
         }
     }
 

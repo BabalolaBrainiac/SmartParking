@@ -81,7 +81,7 @@ public class ParkingGarageServiceImpl implements ParkingGarageService {
     @Override
     public List<ParkingGarageDto> findAll() {
         return parkingGarageRepository.findAll().stream()
-                .map(parkingGarageMapper::parkingGarageToParkingGarageDTO)
+                .map(parkingGarageMapper::parkingGarageToParkingGarageDTO).sorted()
                 .collect(Collectors.toList());
     }
 

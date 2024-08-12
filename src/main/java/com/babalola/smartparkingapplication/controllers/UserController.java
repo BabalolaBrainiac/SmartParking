@@ -27,7 +27,6 @@ import static com.babalola.smartparkingapplication.controllers.UserController.Us
 @RequestMapping(UsersAPI)
 public class UserController {
     public static final String UsersAPI = ApplicationUrlMapping.USERS_API;
-
     private final UserService userService;
 
     @Autowired
@@ -97,6 +96,17 @@ public class UserController {
     })
     public ResponseEntity<Optional<User>> getUserByEmailAndPassword(@RequestBody LoginRequest loginRequest) {
         return ResponseEntity.ok(userService.findUserByEmailAndPassword(loginRequest.getEmail(), loginRequest.getPassword()));
+    }
+
+
+    @GetMapping()
+    @Operation(summary = "Find all users")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully found user", content = @Content(schema = @Schema(implementation = User.class))),
+            @ApiResponse(responseCode = "404", description = "User not found")
+    })
+    public ResponseEntity<List<User>> getAllUsers() {
+        return ResponseEntity.ok(userService.findAllUsers());
     }
 
     static class LoginRequest {

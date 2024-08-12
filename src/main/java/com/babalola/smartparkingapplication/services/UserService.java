@@ -24,4 +24,6 @@ public interface UserService {
     List<User> findUsersByFirstNameAndLastName(String firstName, String lastName);
 
     Optional<User> findUserByEmailAndPassword(String email, String password);
+
+    List<User> findAllUsers();
 }

@@ -4,18 +4,25 @@ import com.babalola.smartparkingapplication.domain.entities.*;
 import com.babalola.smartparkingapplication.domain.enums.UserTypeEnum;
 import com.babalola.smartparkingapplication.domain.mappers.UserMapper;
 import com.babalola.smartparkingapplication.dtos.UserDto;
+import com.babalola.smartparkingapplication.exceptions.ResourceExistsException;
 import com.babalola.smartparkingapplication.repositories.UserRepository;
 import org.apache.kafka.common.errors.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
+
+    @Autowired
+    private UserMapper userMapper;
+
     @Autowired
     public UserServiceImpl(UserRepository userRepository) {
         this.userRepository = userRepository;
@@ -31,6 +38,8 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public User createDriver(Driver driver) {
+        validateExistingUser(driver.getEmail());
+
         User user = new User();
         user.setFirstName(driver.getFirstName());
         user.setLastName(driver.getLastName());
@@ -48,6 +57,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public User createParkOwner(ParkOwner parkOwner) {
+        validateExistingUser(parkOwner.getEmail());
 
         User user = new User();
         user.setFirstName(parkOwner.getFirstName());
@@ -68,6 +78,8 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public User createAdminUser(AdminUser adminUser) {
+        validateExistingUser(adminUser.getEmail());
+
         User user = new User();
         user.setFirstName(adminUser.getFirstName());
         user.setLastName(adminUser.getLastName());
@@ -82,14 +94,13 @@ public class UserServiceImpl implements UserService {
 
         userRepository.save(user);
         return user;
-
     }
 
     @Override
     public User findUserByEmail(String email) {
         var user = userRepository.findByEmail(email);
 
-        if(user.isEmpty()) {
+        if (user.isEmpty()) {
             throw new ResourceNotFoundException("User does not exist");
         }
 
@@ -105,5 +116,20 @@ public class UserServiceImpl implements UserService {
     @Override
     public Optional<User> findUserByEmailAndPassword(String email, String password) {
         return userRepository.findByEmailAndPassword(email, password);
+    }
+
+    @Override
+    public List<User> findAllUsers() {
+        return new ArrayList<>(userRepository.findAll());
+    }
+
+    private void validateExistingUser(String email) throws ResourceExistsException {
+        var existingUser = this.findUserByEmail(email);
+
+        if (existingUser == null) {
+            return;
+        }
+
+        throw new ResourceExistsException("This user already exist");
     }
 }

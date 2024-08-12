@@ -1,6 +1,5 @@
 package com.babalola.smartparkingapplication.models;
 
-
 import lombok.Data;
 
 @Data

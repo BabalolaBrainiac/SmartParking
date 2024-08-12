@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -25,5 +26,6 @@ public class ParkOwner extends BaseUser {
 
     public ParkOwner() {
         this.setUserType(UserTypeEnum.PARK_OWNER);
+        this.parkingGarages = new ArrayList<>();
     }
 }

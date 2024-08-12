@@ -1,6 +1,5 @@
 package com.babalola.smartparkingapplication.services;
 
-
 import com.babalola.smartparkingapplication.domain.entities.AvailableParkingSpace;
 import com.babalola.smartparkingapplication.domain.entities.Booking;
 import com.babalola.smartparkingapplication.domain.entities.User;
@@ -22,9 +21,6 @@ import java.util.stream.Collectors;
 
 @Service
 public class BookingServiceImpl implements BookingService {
-
-
-
     private LoggerService loggerService;
 
     @Autowired
@@ -39,68 +35,79 @@ public class BookingServiceImpl implements BookingService {
     @Autowired
     private BookingMapper bookingMapper;
 
-    @Override
-    @Transactional
-    public BookingDto createBooking(BookingDto bookingDto) {
-
-        User user = userRepository.getById(bookingDto.userId());
-
-        if(user.getId() == null) {
-            throw new ResourceNotFoundException("User not found");
-        }
-
-        Optional<AvailableParkingSpace> optionalAvailableParkingSpace = parkingSpaceRepository.findById(bookingDto.availableParkingSpaceId());
-
-        if (optionalAvailableParkingSpace.isEmpty()) {
-            throw new ResourceNotFoundException("Available parking space not found");
-        }
-
-        AvailableParkingSpace availableParkingSpace = optionalAvailableParkingSpace.get();
-
-        if (availableParkingSpace.getAvailableSpaces() <= 0) {
-            throw new ResourceNotFoundException("No available parking spaces");
-        }
-
-
-
-        Booking booking = bookingMapper.bookingDtoToBooking(bookingDto);
-        booking.setStatus(BookingStatus.PENDING);
-
-        booking = bookingRepository.save(booking);
-
-
+    private static void processBooking(AvailableParkingSpace availableParkingSpace) {
         //TODO
         //Implement payment and process before updating parking space and mark booking as completed
 
         availableParkingSpace.setAvailableSpaces(availableParkingSpace.getAvailableSpaces() - 1);
 
-        parkingSpaceRepository.save(availableParkingSpace);
-        return bookingMapper.bookingToBookingDto(booking);
+        //TODO
+        //Send Notification to user and park owner??
+    }
+
+    @Override
+    @Transactional
+    public BookingDto createBooking(BookingDto bookingDto) throws Exception {
+
+        AvailableParkingSpace availableParkingSpace = validateAvailableParkingSpace(bookingDto);
+
+        User user = getUser(bookingDto.userId());
+
+        Booking booking = bookingMapper.bookingDtoToBooking(bookingDto);
+        booking.setUser(user);
+        booking.setStatus(BookingStatus.PENDING);
+
+        try {
+            booking = bookingRepository.save(booking);
+
+            if(booking.getId() != null) {
+                processBooking(availableParkingSpace);
+            }
+
+            parkingSpaceRepository.save(availableParkingSpace);
+            return bookingMapper.bookingToBookingDto(booking);
+
+        } catch (Exception exception) {
+            loggerService.error("An error occured when creating a booking", exception);
+            return null;
+        }
+    }
+
+    private AvailableParkingSpace validateAvailableParkingSpace(BookingDto bookingDto) throws ResourceNotFoundException {
+        Optional<AvailableParkingSpace> optionalAvailableParkingSpace = Optional.ofNullable(parkingSpaceRepository.findById(bookingDto.availableParkingSpaceId()).orElseThrow(() -> new ResourceNotFoundException("Available parking space not found")));
+        AvailableParkingSpace availableParkingSpace = optionalAvailableParkingSpace.get();
+
+        if (availableParkingSpace.getAvailableSpaces() <= 0) {
+            throw new ResourceNotFoundException("No available parking spaces");
+        }
+        return availableParkingSpace;
     }
 
     @Override
     @Transactional
     public BookingDto updateBooking(Long bookingId, BookingDto bookingDto) {
-        Booking booking = bookingRepository.findById(bookingId)
-                .orElseThrow(() -> new ResourceNotFoundException("Booking not found"));
+        Booking booking = getBooking(bookingId);
         bookingMapper.updateBookingFromDto(bookingDto, booking);
         booking = bookingRepository.save(booking);
         return bookingMapper.bookingToBookingDto(booking);
     }
 
+    private Booking getBooking(Long bookingId) {
+        return bookingRepository.findById(bookingId)
+                .orElseThrow(() -> new ResourceNotFoundException("Booking not found"));
+    }
+
     @Override
     @Transactional
     public void cancelBooking(Long bookingId) {
-        Booking booking = bookingRepository.findById(bookingId)
-                .orElseThrow(() -> new ResourceNotFoundException("Booking not found"));
+        Booking booking = getBooking(bookingId);
         booking.setStatus(BookingStatus.CANCELLED);
         bookingRepository.save(booking);
     }
 
     @Override
     public BookingDto getBookingById(Long bookingId) {
-        Booking booking = bookingRepository.findById(bookingId)
-                .orElseThrow(() -> new ResourceNotFoundException("Booking not found"));
+        Booking booking = getBooking(bookingId);
         return bookingMapper.bookingToBookingDto(booking);
     }
 
@@ -108,9 +115,25 @@ public class BookingServiceImpl implements BookingService {
     public List<BookingDto> getAllBookings() {
         return bookingRepository.findAll().stream()
                 .map(bookingMapper::bookingToBookingDto)
+                .sorted()
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public List<BookingDto> getBookingsByUserId(Long userId) {
+        User user = getUser(userId);
+        return bookingRepository.findByUser(user).stream().map(bookingMapper::bookingToBookingDto).sorted().collect(Collectors.toList());
+    }
+
+    private User getUser(Long userId) {
+        return userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User not found"));
+    }
+
+    @Override
+    public List<BookingDto> getBookingByUserIdAndBookingStatus(Long userId, BookingStatus bookingStatus) {
+        User user = getUser(userId);
+        return bookingRepository.findByUserAndBookingStatus(user.getId(), bookingStatus).stream().map(bookingMapper::bookingToBookingDto).collect(Collectors.toList());
+    }
     public boolean processPendingOrCancelledBooking(Long bookingId) {
         var bookingDto = getBookingById(bookingId);
         Booking booking = bookingMapper.bookingDtoToBooking(bookingDto);
@@ -126,5 +149,21 @@ public class BookingServiceImpl implements BookingService {
 
         loggerService.info("Booking" + booking.getId() + "has already been processed");
         return false;
+    }
+
+    @Override
+    public List<BookingDto> getAllParkOwnersBooking(Long parkOwnerId) {
+        List<Booking> bookings = bookingRepository.findAllByParkOwnerId(parkOwnerId);
+        return bookings.stream()
+                .map(bookingMapper::bookingToBookingDto)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<BookingDto> getBookingsByParkOwnerAndStatus(Long parkOwnerId, BookingStatus bookingStatus) {
+        List<Booking> bookings = bookingRepository.findAllByParkOwnerIdAndStatus(parkOwnerId, bookingStatus);
+        return bookings.stream()
+                .map(bookingMapper::bookingToBookingDto)
+                .collect(Collectors.toList());
     }
 }
